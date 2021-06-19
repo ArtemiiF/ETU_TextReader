@@ -11,6 +11,10 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QAxObject>
+#include <QAxWidget>
+#include <QString>
+
 
 class TextReader : public QMainWindow
 {
@@ -25,6 +29,7 @@ private slots:
 private:
     QTextEdit *textEdit;
     QAction *openAction;
+    QAxWidget *axw;
 
     QMenu *fileMenu;
 };

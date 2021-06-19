@@ -10,28 +10,27 @@ TextReader::TextReader()
     fileMenu->addAction(openAction);
     fileMenu->addSeparator();
 
-    textEdit = new QTextEdit;
-    setCentralWidget(textEdit);
-
-    setWindowTitle(tr("TextReader"));
-
+    setWindowTitle(tr("DocReader"));
 }
 
 void TextReader::open()
 {
+    //Получаем адрес файла
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
-        tr("Text Files (*.txt);;C++ Files (*.cpp *.h)"));
+        tr("Docx,Odt (*.docx *.odt)"));
 
     if (fileName != "")
     {
-        QFile file(fileName);
-        if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
-            return;
+        //Если формат docx
+        if(fileName.endsWith(".docx"))
+        {
+            axw = new QAxWidget("Word.Document",nullptr);
+            axw->setControl(fileName);
+            setCentralWidget(axw);
+            axw->setGeometry(0,0,800,600);
+            axw->show();
+
         }
-        QTextStream in(&file);
-        textEdit->setText(in.readAll());
-        file.close();
     }
 }
 
