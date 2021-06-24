@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>test/example.html</file>
+        <file>img/Interface/boldText.png</file>
+        <file>img/Interface/centralAlign.png</file>
+        <file>img/Interface/italicText.png</file>
+        <file>img/Interface/leftAlign.png</file>
+        <file>img/Interface/rightAlign.png</file>
+        <file>img/Interface/underlineText.png</file>
+        <file>img/icon.ico</file>
+    </qresource>
+</RCC>
