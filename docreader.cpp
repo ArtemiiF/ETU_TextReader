@@ -16,7 +16,7 @@ void DocReader::setTarget(QQuickItem *target)
     if (!(this->target))
         return;
 
-    QVariant document = this->target->property("textDoc");
+    QVariant document = this->target->property("textDocument");
     if (document.canConvert<QQuickTextDocument*>())
     {
         QQuickTextDocument *qqdoc = document.value<QQuickTextDocument*>();
