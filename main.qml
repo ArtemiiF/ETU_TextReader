@@ -17,26 +17,6 @@ ApplicationWindow
 
     title: doc.docTitle + " - DocReader"
 
-    Item {
-        width: 8
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.margins: 6
-        Rectangle {
-            width: 1
-            height: parent.height
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "#22000000"
-        }
-        Rectangle {
-            width: 1
-            height: parent.height
-            anchors.horizontalCenterOffset: 1
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "#33ffffff"
-        }
-    }
-
     ColorDialog
     {
         id: colorDialog
@@ -118,24 +98,43 @@ ApplicationWindow
         shortcut: "ctrl+o"
         onTriggered:
         {
-            fileDialog.selectExisting = true
+            fileDialog.setNameFilters("HTML files (*.html)")
+            fileDialog.type = 0;
+            fileDialog.selectExisting = true;
+
             fileDialog.open()
         }
 
+    }
+
+    Action
+    {
+        id: fileConvertPdfAction
+        text: "Convert file to PDF"
+        onTriggered:
+        {
+            fileDialog.setNameFilters("PDF file (*.pdf)")
+            fileDialog.type = 2;
+            fileDialog.selectExisting = false;
+
+            fileDialog.open();
+        }
     }
 
     FileDialog
     {
         id: fileDialog
         //nameFilters: ["Docx, ODT files (*.docx,*.odt)"]
-        nameFilters: ["HTML files (*.html)"]
+        nameFilters: ["HTML files (*.html, *.htm)"]
+        property int type: 0    //0 - открыть, 1 - сохранить???, 2 - конвертация в pdf
 
         onAccepted:
-        if(fileDialog.selectExisting)
+        if(type == 0)
             doc.filePath = fileUrl
-        else
-            doc.saveAs(fileUrl,selectNameFilter)
-
+        else if(type == 1)
+            doc.saveAs(fileUrl,selectNameFilter) //Потом добавить
+        else if(type == 2)
+            doc.convertToPdf(fileUrl,".pdf");
     }
 
 
@@ -145,6 +144,7 @@ ApplicationWindow
         {
             title: "&File"
             MenuItem{action: fileOpenAction}
+            MenuItem {action: fileConvertPdfAction}
         }
     }
 
@@ -158,31 +158,9 @@ ApplicationWindow
         {
             anchors.fill: parent
             spacing: 0
-
-
             ToolButton { action: alignLeftAction }
             ToolButton { action: alignCentralAction }
             ToolButton { action: alignRightAction }
-
-            Item {
-                width: 8
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.margins: 6
-                Rectangle {
-                    width: 1
-                    height: parent.height
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    color: "#22000000"
-                }
-                Rectangle {
-                    width: 1
-                    height: parent.height
-                    anchors.horizontalCenterOffset: 1
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    color: "#33ffffff"
-                }
-            }
 
             ToolButton { action: boldAction }
             ToolButton { action: italicAction }
@@ -212,7 +190,7 @@ ApplicationWindow
             ToolButton
             {
                 id: colorButton
-                property color bool : doc.textColor
+                property var color : doc.textColor
                 Rectangle
                 {
                     id: colorRect
@@ -228,8 +206,9 @@ ApplicationWindow
                     colorDialog.open()
                 }
             }
+            Item { Layout.fillWidth: true }
         }
-        Item { Layout.fillWidth: true }
+
     }
 
     ToolBar
@@ -303,9 +282,13 @@ ApplicationWindow
     {
         id: doc
         target: textArea
-        p_cursorPosition: textArea.cursorPosition
+        cursorPosition: textArea.cursorPosition
+        selectionStart: textArea.selectionStart
+        selectionEnd: textArea.selectionEnd
         textColor: colorDialog.color
         Component.onCompleted: doc.filePath = "qrc:/test/example.html"
+
+
 
         //Изменение размера шрифта
         onFontSizeChanged:

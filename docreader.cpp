@@ -1,5 +1,6 @@
 #include "docreader.h"
 
+
 DocReader::DocReader()
 {
     target = 0;
@@ -36,6 +37,7 @@ void DocReader::setFilePath(const QString &filePath)
 
         QString fp = QQmlFile::urlToLocalFileOrQrc(filePath);
 
+        //Переделать в раскладывание docx в html
         if(QFile::exists(fp))
         {
             QFile file(fp);
@@ -62,18 +64,47 @@ void DocReader::setFilePath(const QString &filePath)
     }
 }
 
-QString DocReader::getFilePath()
+QString DocReader::getFilePath() const
 {
     return filePath;
 }
 
+//Конвертирование в pdf
+void DocReader::convertToPdf(const QUrl &fileUrl, const QString &fileType)
+{
+
+    QString pdfPath = fileUrl.toLocalFile();
+    QString ending = fileType;
+    QString currPath = filePath;
+
+    if(!pdfPath.endsWith(ending))
+       pdfPath += ending;
+
+    QFile file(pdfPath);
+
+    if(!file.open(QFile::WriteOnly|QFile::Truncate))
+    {
+        emit error (tr("Cannot Save:")+file.errorString());
+        return;
+    }
+
+    //Переделать не работает
+    qDebug()<<currPath;
+    qDebug()<<pdfPath;
+
+    QWebEnginePage page;
+
+    page.load(currPath);
+    page.printToPdf(pdfPath);
+}
+
 //Геттер и сеттер для заголовка
-QString DocReader::getDocTitle()
+QString DocReader::getDocTitle() const
 {
     return docTitle;
 }
 
-void DocReader::setDocTitle(const QString &title)
+void DocReader::setDocTitle(QString &title)
 {
     if(docTitle!=title)
     {
@@ -83,7 +114,7 @@ void DocReader::setDocTitle(const QString &title)
 }
 
 //Геттер и сеттер для текста
-QString DocReader::getText()
+QString DocReader::getText() const
 {
     return text;
 }
@@ -100,7 +131,7 @@ void DocReader::setText(const QString &text)
 //Курсор
 void DocReader::setCursorPosition(int position)
 {
-    if(position==cursorPosition)
+    if(position == cursorPosition)
     {
         return;
     }
@@ -119,10 +150,13 @@ QTextCursor DocReader::textCursor() const
     if(начало выделение != конец выделения)
         ...
     else*/
-    if (selectionStart != selectionEnd) {
+    if (selectionStart != selectionEnd)
+    {
         cursor.setPosition(selectionStart);
         cursor.setPosition(selectionEnd, QTextCursor::KeepAnchor);
-    } else {
+    }
+    else
+    {
         cursor.setPosition(cursorPosition);
     }
     //cursor.setPosition(cursorPosition);
@@ -244,7 +278,7 @@ void DocReader::setFontFamily(const QString &font)
     emit fontFamilyChanged();
 }
 
-QStringList DocReader::defaultFontSizes()
+QStringList DocReader::defaultFontSizes() const
 {
     QStringList sizes;
     QFontDatabase db;

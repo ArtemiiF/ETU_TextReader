@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
     qmlRegisterType<DocReader>("Document.Reader",1,0,"DocReader");
 
     QQmlApplicationEngine engine(QUrl(QStringLiteral("qrc:/main.qml")));
-    //engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
 

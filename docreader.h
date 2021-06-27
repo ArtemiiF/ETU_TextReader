@@ -11,6 +11,10 @@
 #include <QtGui/QTextCursor>
 #include <QtGui/QFontDatabase>
 #include <QtCore/QFileInfo>
+#include <QtWebEngine>
+#include <QtWebEngineWidgets>
+#include <QWebEnginePage>
+#include <QPrinter>
 
 class DocReader: public QObject
 {
@@ -19,9 +23,9 @@ class DocReader: public QObject
 
     //Связь с интерфейсом
     Q_PROPERTY(QQuickItem *target READ getTarget WRITE setTarget NOTIFY targetChanged)
-    Q_PROPERTY(int p_cursorPosition READ getCursorPosition WRITE setCursorPosition NOTIFY cursorPositionChanged)
-    Q_PROPERTY(int p_selectionStart READ getSelectionStart WRITE setSelectionStart NOTIFY selectionStartChanged)
-    Q_PROPERTY(int p_selectionEnd READ getSelectionEnd WRITE setSelectionEnd NOTIFY selectionEndChanged)
+    Q_PROPERTY(int cursorPosition READ getCursorPosition WRITE setCursorPosition NOTIFY cursorPositionChanged)
+    Q_PROPERTY(int selectionStart READ getSelectionStart WRITE setSelectionStart NOTIFY selectionStartChanged)
+    Q_PROPERTY(int selectionEnd READ getSelectionEnd WRITE setSelectionEnd NOTIFY selectionEndChanged)
     Q_PROPERTY(QColor textColor READ textColor WRITE setTextColor NOTIFY textColorChanged)
     Q_PROPERTY(QString fontFamily READ getFontFamily WRITE setFontFamily NOTIFY fontFamilyChanged)
 
@@ -42,12 +46,12 @@ class DocReader: public QObject
 public:
     DocReader();
 
-    QStringList defaultFontSizes();
+    QStringList defaultFontSizes() const;
 
     //Геттеры для инфы про файл
-    QString getFilePath();
-    QString getText();
-    QString getDocTitle();
+    QString getFilePath() const;
+    QString getText() const;
+    QString getDocTitle() const;
 
     //Инфа по тексту(на месте курсора)
     QString getFontFamily() const;
@@ -66,7 +70,7 @@ public:
     int getCursorPosition()const {return cursorPosition;}
     int getSelectionStart() const { return selectionStart; }
     int getSelectionEnd() const { return selectionEnd; }
-    QQuickItem *getTarget(){return target;};
+    QQuickItem *getTarget(){return target;}
 
     //Текст справа по центру слева
     Qt::Alignment alignment() const;
@@ -74,6 +78,7 @@ public:
 
     //Доп функции
     void setTarget(QQuickItem *target);
+  Q_INVOKABLE void convertToPdf(const QUrl &fileUrl, const QString &fileType);
 
 
 //слоты
@@ -81,7 +86,7 @@ public Q_SLOTS:
 
         void setFilePath( const QString &filePath);
         void setText( const QString &text);
-        void setDocTitle( const QString &docTitle);
+        void setDocTitle(QString &docTitle);
 
         //Слоты связанные с отображение текста(шрифт, размер, цвет и т.д.)
         void setBold(bool flag);
