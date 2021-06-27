@@ -113,11 +113,11 @@ ApplicationWindow
         text: "Convert file to PDF"
         onTriggered:
         {
-            fileDialog.setNameFilters("PDF file (*.pdf)")
-            fileDialog.type = 2;
-            fileDialog.selectExisting = false;
-
-            fileDialog.open();
+            //fileDialog.setNameFilters("PDF file (*.pdf)")
+            //fileDialog.type = 2;
+            //fileDialog.selectExisting = false;
+            doc.convertToPdf();
+            //fileDialog.open();
         }
     }
 
@@ -286,9 +286,19 @@ ApplicationWindow
         selectionStart: textArea.selectionStart
         selectionEnd: textArea.selectionEnd
         textColor: colorDialog.color
-        Component.onCompleted: doc.filePath = "qrc:/test/example.html"
+        property string initPath: "qrc:/test/example.html"
+        Component.onCompleted:
+        {
+            var xhr = new XMLHttpRequest;
+            xhr.open("GET","tempFiles/initpath.txt")
+            xhr.onreadystatechange = function()
+            {
+                if(xhr.readyState == XMLHttpRequest.DONE)
+                    initPath = xhr.responseText;
+            }
 
-
+            doc.filePath = initPath
+        }
 
         //Изменение размера шрифта
         onFontSizeChanged:

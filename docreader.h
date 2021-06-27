@@ -11,10 +11,11 @@
 #include <QtGui/QTextCursor>
 #include <QtGui/QFontDatabase>
 #include <QtCore/QFileInfo>
-#include <QtWebEngine>
-#include <QtWebEngineWidgets>
-#include <QWebEnginePage>
-#include <QPrinter>
+#include <QtWebEngine/QtWebEngine>
+#include <QtWebEngineWidgets/QWebEngineView>
+#include <QtPrintSupport/QPrinter>
+#include <QtSerialPort/QSerialPort>
+#include <functional>
 
 class DocReader: public QObject
 {
@@ -45,7 +46,7 @@ class DocReader: public QObject
 
 public:
     DocReader();
-
+    ~DocReader();
     QStringList defaultFontSizes() const;
 
     //Геттеры для инфы про файл
@@ -78,7 +79,7 @@ public:
 
     //Доп функции
     void setTarget(QQuickItem *target);
-  Q_INVOKABLE void convertToPdf(const QUrl &fileUrl, const QString &fileType);
+  Q_INVOKABLE void convertToPdf(/*const QUrl &fileUrl, const QString &fileType*/);
 
 
 //слоты

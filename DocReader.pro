@@ -11,10 +11,12 @@ OTHER_FILES +=\
 
 SOURCES += \
     docreader.cpp \
+    doctohtml.cpp \
     main.cpp
 
 HEADERS += \
-    docreader.h
+    docreader.h \
+    doctohtml.h
 
 RESOURCES += \
    res.qrc

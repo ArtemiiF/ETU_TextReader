@@ -1,5 +1,5 @@
 #include "docreader.h"
-
+#include <QFileDialog>
 
 DocReader::DocReader()
 {
@@ -8,6 +8,10 @@ DocReader::DocReader()
     cursorPosition = -1;
     selectionEnd = 0;
     selectionStart = 0;
+}
+
+DocReader::~DocReader()
+{
 }
 
 void DocReader::setTarget(QQuickItem *target)
@@ -70,12 +74,12 @@ QString DocReader::getFilePath() const
 }
 
 //Конвертирование в pdf
-void DocReader::convertToPdf(const QUrl &fileUrl, const QString &fileType)
+void DocReader::convertToPdf(/*const QUrl &fileUrl, const QString &fileType*/)
 {
 
-    QString pdfPath = fileUrl.toLocalFile();
+/*    const QString pdfPath = fileUrl.toLocalFile();
     QString ending = fileType;
-    QString currPath = filePath;
+    const QUrl currPath = filePath;
 
     if(!pdfPath.endsWith(ending))
        pdfPath += ending;
@@ -92,10 +96,21 @@ void DocReader::convertToPdf(const QUrl &fileUrl, const QString &fileType)
     qDebug()<<currPath;
     qDebug()<<pdfPath;
 
-    QWebEnginePage page;
+    QWebEngineView* webView = new QWebEngineView();
+    webView->load(currPath);
+    webView->page()->printToPdf(pdfPath);*/
 
-    page.load(currPath);
-    page.printToPdf(pdfPath);
+
+    QWebEngineView* webView = new QWebEngineView();
+
+
+    const QString fp = QFileDialog::getOpenFileName(0, QObject::tr("Открыть документ"),"D:\\", QObject::tr("Файлы документов (*.html)"));
+    QFileInfo fileInfo(fp);
+
+    webView->load(QUrl::fromLocalFile(fileInfo.filePath()));
+    const QString pdf = QFileDialog::getSaveFileName(0, "Ep", "D:\\", "pd (*.pdf)");
+    webView->page()->printToPdf(pdf);
+
 }
 
 //Геттер и сеттер для заголовка
