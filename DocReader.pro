@@ -1,6 +1,6 @@
 QT       += core gui printsupport  qml quick gui-private xmlpatterns xml
 QT       += webengine webenginewidgets
-TARGET    = texteditor
+TARGET    = DocReader
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

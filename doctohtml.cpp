@@ -100,30 +100,43 @@ DocToHtml::DocToHtml()
 
  void DocToHtml::convertToHtml(QString filePath)
  {
-         extractDoc(filePath);
+     QString out;
+        //Для docx
+        if(filePath.endsWith(".docx"))
+        {
+            extractDoc(filePath);
+            QFile inp("C:\\DocReaderTempFiles\\word\\document.xml");
+            inp.open(QIODevice::ReadOnly|QIODevice::Text);
+            QByteArray be = NULL;
+             be.append(inp.readAll());
+             QBuffer xml(&be);
+             xml.open(QIODevice::ReadOnly);
 
-         QFile inp("C:\\DocReaderTempFiles\\word\\document.xml");
-         inp.open(QIODevice::ReadOnly|QIODevice::Text);
-         QByteArray be = NULL;
-          be.append(inp.readAll());
-          QBuffer xml(&be);
-          xml.open(QIODevice::ReadOnly);
+             QFile inp1(":/tempDocx.xsl");
+             inp1.open(QIODevice::ReadOnly|QIODevice::Text);
+             QByteArray be1 = NULL;
+              be1.append(inp1.readAll());
+              QBuffer xsl(&be1);
+              xsl.open(QIODevice::ReadOnly);
+              QXmlQuery q(QXmlQuery::XSLT20);
 
-          QFile inp1(":/temp.xsl");
-          inp1.open(QIODevice::ReadOnly|QIODevice::Text);
-          QByteArray be1 = NULL;
-           be1.append(inp1.readAll());
-           QBuffer xsl(&be1);
-           xsl.open(QIODevice::ReadOnly);
+              q.setFocus(&xml);
+              q.setQuery(&xsl);
 
-         QXmlQuery q(QXmlQuery::XSLT20);
 
-         q.setFocus(&xml);
-         q.setQuery(&xsl);
-         QString out;
+              q.evaluateTo(&out);
+              qDebug() << out;
+        }
 
-         q.evaluateTo(&out);
-         qDebug() << out;
+        if(filePath.endsWith(".odt"))
+        {
+
+        }
+
+
+
+
+
 
          deleteGarbage();
          creationHtml(out);

@@ -36,7 +36,6 @@ void DocReader::setTarget(QQuickItem *target)
 //геттер и сеттер для filePath
 void DocReader::setFilePath(const QString &filePath)
 {
-    QString dir = "C:\\DocReaderTempFiles";
     if(this->filePath!=filePath)
     {
         this->filePath = filePath;

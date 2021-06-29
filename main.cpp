@@ -16,10 +16,6 @@ int main(int argc, char *argv[])
     qDebug()<<argc;
     qDebug()<<argv[0];
 
-    QDir().mkdir("tempFiles");
-
-
-
 
     qmlRegisterType<DocReader>("Document.Reader",1,0,"DocReader");
     QQmlApplicationEngine engine(QUrl(QStringLiteral("qrc:/main.qml")));
