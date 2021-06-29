@@ -37,6 +37,5 @@ DISTFILES += \
     img/Interface/leftAlign.png \
     img/Interface/rightAlign.png \
     img/Interface/underlineText.png \
-    img/icon.ico \
-    temp.xsl
+    img/icon.ico
 

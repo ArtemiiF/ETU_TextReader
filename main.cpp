@@ -18,6 +18,9 @@ int main(int argc, char *argv[])
 
     QDir().mkdir("tempFiles");
 
+
+
+
     qmlRegisterType<DocReader>("Document.Reader",1,0,"DocReader");
     QQmlApplicationEngine engine(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

@@ -98,7 +98,8 @@ ApplicationWindow
         shortcut: "ctrl+o"
         onTriggered:
         {
-            fileDialog.setNameFilters("DOCX files (*.docx);; ODT files(*.odt);; HTML files (*.html *.htm)")
+            //fileDialog.setNameFilters("DOCX files (*.docx);; ODT files(*.odt);; HTML files (*.html *.htm)")
+            fileDialog.setNameFilters("DOCX files (*.docx)")
             fileDialog.type = 0;
             fileDialog.selectExisting = true;
 

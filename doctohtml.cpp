@@ -1,20 +1,18 @@
 #include "doctohtml.h"
+#include <QTextCodec>
 
 DocToHtml::DocToHtml()
 {
 
 }
 
- void DocToHtml::extractDoc(QString filePath)
+ void DocToHtml::extractDoc(QUrl filePath)
  {
-
-
-     QString dir = "C:\\tempFiles";
+     QString dir = "C:\\DocReaderTempFiles\\";
      QDir().mkdir(dir);
 
      QString zfolder(dir);
-     QZipReader zip_r(filePath);
-
+     QZipReader zip_r(filePath.toLocalFile());
 
      qDebug()<<filePath;
 
@@ -98,4 +96,66 @@ DocToHtml::DocToHtml()
          }
 
          zip_r.extractAll(dir);
+ }
+
+ void DocToHtml::convertToHtml(QString filePath)
+ {
+         extractDoc(filePath);
+
+         QFile inp("C:\\DocReaderTempFiles\\word\\document.xml");
+         inp.open(QIODevice::ReadOnly|QIODevice::Text);
+         QByteArray be = NULL;
+          be.append(inp.readAll());
+          QBuffer xml(&be);
+          xml.open(QIODevice::ReadOnly);
+
+          QFile inp1(":/temp.xsl");
+          inp1.open(QIODevice::ReadOnly|QIODevice::Text);
+          QByteArray be1 = NULL;
+           be1.append(inp1.readAll());
+           QBuffer xsl(&be1);
+           xsl.open(QIODevice::ReadOnly);
+
+         QXmlQuery q(QXmlQuery::XSLT20);
+
+         q.setFocus(&xml);
+         q.setQuery(&xsl);
+         QString out;
+
+         q.evaluateTo(&out);
+         qDebug() << out;
+
+         deleteGarbage();
+         creationHtml(out);
+ }
+
+ void DocToHtml::deleteGarbage()
+ {
+     qDebug()<<"delete temp files";
+     QDir dir("C:\\DocReaderTempFiles");
+     dir.removeRecursively();
+ }
+
+ void DocToHtml::creationHtml(QString htmlPage)
+ {
+     QString fileName = "tempDoc.html";
+
+     if(QFile::exists(fileName))
+     {
+        QFile file(fileName);
+        file.remove();
+     }
+
+    QFile file(fileName);
+
+    if (file.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
+
+        QTextStream stream( &file );
+            //stream.setString(&htmlPage);
+        stream.setCodec("UTF-8");
+        stream<<htmlPage;
+
+
+    }
  }

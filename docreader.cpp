@@ -1,7 +1,6 @@
 #include "docreader.h"
 #include <QFileDialog>
 #include "doctohtml.h"
-#include <QXmlQuery>
 
 DocReader::DocReader()
 {
@@ -37,14 +36,16 @@ void DocReader::setTarget(QQuickItem *target)
 //геттер и сеттер для filePath
 void DocReader::setFilePath(const QString &filePath)
 {
-    QString dir = "C:\\tempFiles";
+    QString dir = "C:\\DocReaderTempFiles";
     if(this->filePath!=filePath)
     {
         this->filePath = filePath;
 
-        QString fp = QQmlFile::urlToLocalFileOrQrc(filePath);
+        QString fp = "tempDoc.html";
 
-        if(filePath.endsWith(".html"))
+        DocToHtml::convertToHtml(filePath);
+
+        if(fp.endsWith(".html"))
         {
             if(QFile::exists(fp))
                     {
@@ -69,95 +70,11 @@ void DocReader::setFilePath(const QString &filePath)
                         }
                     }
                     emit filePathChanged();
-            return;
 
         }
 
-        if(QFile::exists(fp))
-        {
-
-        DocToHtml doctothml;
-
-        doctothml.extractDoc(fp);
-
-        QXmlQuery q(QXmlQuery::XSLT20);
-
-        QFile filexml(dir+"\\word\\document.xml");
-
-        if (!filexml.open(QIODevice::ReadOnly))
-        {
-                return;
-            }
-
-        QByteArray bArray;
-
-            while (!filexml.atEnd())
-            {
-                bArray += filexml.readLine();
-            }
-
-            QBuffer xOriginalContent(&bArray);
-                xOriginalContent.open(QBuffer::ReadWrite);
-                xOriginalContent.reset();
-
-                if (q.setFocus(&xOriginalContent))
-                         qDebug() << "File Loaded";
-
-                QFile filexsl("temp.xsl");
-
-                if (!filexsl.open(QIODevice::ReadOnly))
-                {
-                        return;
-                    }
-
-                QByteArray aArray;
-
-                    while (!filexsl.atEnd())
-                    {
-                        aArray += filexsl.readLine();
-                    }
-
-                    QBuffer yOriginalContent(&aArray);
-                        yOriginalContent.open(QBuffer::ReadWrite);
-                        yOriginalContent.reset();
-
-                        q.setQuery(&yOriginalContent);
-
-                        QString out;
-                        q.evaluateTo(&out);
-                        qDebug()<<out;
 
 
-
-        //Создание html
-        QFile file(dir+"\\example.html");
-        if (file.open(QIODevice::ReadWrite))
-        {
-                QTextStream stream(&file);
-                stream << out;
-
-
-
-        //Открываем html
-
-                QByteArray data = file.readAll();
-                QTextCodec *codec = QTextCodec::codecForHtml(data);
-                setText(codec->toUnicode(data));
-
-                if(doc)
-                    doc->setModified(false);
-                if(filePath.isEmpty())
-                    docTitle = QStringLiteral("untitled.txt");
-                else
-                    docTitle = QFileInfo(filePath).fileName();
-
-                emit textChanged();
-                emit docTitleChanged();
-
-                reset();
-            }
-        }
-        emit filePathChanged();
     }
 }
 

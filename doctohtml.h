@@ -3,19 +3,25 @@
 
 #include "QtGui\private\qzipreader_p.h"
 #include "QtGui\private\qzipwriter_p.h"
+#include <QXmlQuery>
 
 #include <QDir>
 #include <QDebug>
 #include <QDirIterator>
 #include <QFileDialog>
+#include <QBuffer>
 
 class DocToHtml
 {
 public:
     DocToHtml();
 
+    static void convertToHtml(QString filePath);
 
-    void extractDoc(QString filePath);
+private:
+    static void extractDoc(QUrl filePath);
+    static void deleteGarbage();
+    static void creationHtml(QString htmlPage);
 
 };
 

@@ -9,5 +9,6 @@
         <file>img/Interface/rightAlign.png</file>
         <file>img/Interface/underlineText.png</file>
         <file>img/icon.ico</file>
+        <file>temp.xsl</file>
     </qresource>
 </RCC>
