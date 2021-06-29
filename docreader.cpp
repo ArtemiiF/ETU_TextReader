@@ -1,6 +1,7 @@
 #include "docreader.h"
 #include <QFileDialog>
 #include "doctohtml.h"
+#include <QDir>
 
 DocReader::DocReader()
 {
@@ -38,6 +39,12 @@ void DocReader::setFilePath(const QString &filePath)
 {
     if(this->filePath!=filePath)
     {
+        if(!QFile::exists(QUrl(filePath).toLocalFile()))
+        {
+            emit error(tr("Ошибка в выборе файла. Его нет :-("));
+            return;
+        }
+
         this->filePath = filePath;
 
         QString fp = "tempDoc.html";
@@ -67,6 +74,7 @@ void DocReader::setFilePath(const QString &filePath)
 
                             reset();
                         }
+                        file.close();
                     }
                     emit filePathChanged();
 
@@ -82,42 +90,40 @@ QString DocReader::getFilePath() const
     return filePath;
 }
 
-//Конвертирование в pdf
-void DocReader::convertToPdf(/*const QUrl &fileUrl, const QString &fileType*/)
+//Конвертирование в pdf(Не работает)
+void DocReader::convertToPdf()
 {
 
-/*    const QString pdfPath = fileUrl.toLocalFile();
-    QString ending = fileType;
-    const QUrl currPath = filePath;
-
-    if(!pdfPath.endsWith(ending))
-       pdfPath += ending;
+    /*const QString pdfPath = fileUrl.toLocalFile();
 
     QFile file(pdfPath);
 
     if(!file.open(QFile::WriteOnly|QFile::Truncate))
     {
-        emit error (tr("Cannot Save:")+file.errorString());
+        emit error (tr("Cannot convert:")+file.errorString());
         return;
-    }
-
-    //Переделать не работает
-    qDebug()<<currPath;
-    qDebug()<<pdfPath;
-
-    QWebEngineView* webView = new QWebEngineView();
-    webView->load(currPath);
-    webView->page()->printToPdf(pdfPath);*/
-
+    }*/
 
     QWebEngineView* webView = new QWebEngineView();
 
+    /*const QFile fp("tempDoc.html");
+    const QFileInfo fileInfo(fp);*/
 
     const QString fp = QFileDialog::getOpenFileName(0, QObject::tr("Открыть документ"),"D:\\", QObject::tr("Файлы документов (*.html)"));
-    QFileInfo fileInfo(fp);
+        QFileInfo fileInfo(fp);
+
+    //const QString fp1 = QFileDialog::getOpenFileName(0, QObject::tr("Открыть документ"),"D:\\", QObject::tr("Файлы документов (*.html)"));
+    //QFileInfo fileInfo1(fp1);
+    const QString pdf = QFileDialog::getSaveFileName(0, "Ep", "D:\\", "pd (*.pdf)");
+
+
+    //qDebug()<<"1-"+fileInfo.absoluteFilePath();
+   // qDebug()<<"1-"+fileInfo1.absoluteFilePath();
+    //qDebug()<<"2-"+pdfPath;
+    //qDebug()<<"2-"+pdf;
+
 
     webView->load(QUrl::fromLocalFile(fileInfo.filePath()));
-    const QString pdf = QFileDialog::getSaveFileName(0, "Ep", "D:\\", "pd (*.pdf)");
     webView->page()->printToPdf(pdf);
 
 }
