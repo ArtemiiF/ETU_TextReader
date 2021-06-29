@@ -16,7 +16,7 @@
 
   <xsl:template match="w:p">
     <p>
-      <xsl:attribute name="style"><xsl:text>font-size: </xsl:text><xsl:value-of select="w:pPr/w:rPr/w:sz/@w:val"></xsl:value-of><xsl:text>px </xsl:text></xsl:attribute>
+      <xsl:attribute name="style"><xsl:text>font-size: </xsl:text><xsl:value-of select="w:pPr/w:rPr/w:sz/@w:val div 2"></xsl:value-of><xsl:text>pt; </xsl:text></xsl:attribute>
       <xsl:apply-templates>
       </xsl:apply-templates>
     </p>
